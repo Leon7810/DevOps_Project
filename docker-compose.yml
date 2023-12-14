@@ -2,4 +2,30 @@ version: "3"
 services:
   backend:
     build: ./backend
+    container_name: backend
+    networks:
+     - proxy
+    labels:
+      - "traefik.http.routers.api.rule=Host(`s143329.devops-ap.be`)&& Path(`/api/{name:.*}`)"
+      - "traefik.http.routers.api.tls=true"
+      - "traefik.http.routers.api.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.api.entrypoints=websecure"
+      - "traefik.docker.network=traefik"
+  web:
+    image: nginx:latest
+    container_name: web
+    networks:
+     - proxy
+    labels:
+      - "traefik.http.routers.nginx.rule=Host(`s143329.devops-ap.be`)"
+      - "traefik.http.routers.nginx.tls=true"
+      - "traefik.http.routers.nginx.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.nginx.entrypoints=websecure"
+      - "traefik.docker.network=traefik"
+    volumes: 
+      - ./frontend:/usr/share/nginx/html
+networks:
+  proxy:
+    external: true
+    name: traefik
 
