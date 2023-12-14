@@ -2,9 +2,16 @@ version: "3"
 services:
   backend:
     build: ./backend
-    container_name: backend
+    container_name: api
+    environment:
+      STORAGE: mysql
+      MYSQL_HOST: database
+      MYSQL_USER: root
+      MYSQL_PWD: leon
+      MYSQL_DB: examen
     networks:
      - proxy
+     - api-db
     labels:
       - "traefik.http.routers.api.rule=Host(`s143329.devops-ap.be`)&& Path(`/api/{name:.*}`)"
       - "traefik.http.routers.api.tls=true"
@@ -13,7 +20,7 @@ services:
       - "traefik.docker.network=traefik"
   web:
     image: nginx:latest
-    container_name: web
+    container_name: nginx
     networks:
      - proxy
     labels:
@@ -24,8 +31,26 @@ services:
       - "traefik.docker.network=traefik"
     volumes: 
       - ./frontend:/usr/share/nginx/html
+  database:
+    image: mysql:8.2.0
+    restart: always
+    container_name: mysql
+    environment:
+      MYSQL_DATABASE: examen
+      MYSQL_USER: leon
+      MYSQL_USER_PASSWORD: leon
+      MYSQL_ROOT_PASSWORD: leon
+    volumes: 
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - db-data:/var/lib/mysql
+    networks:
+      - api-db
+    ports: 
+      - 33066:3306  
+volumes:
+  db-data:
 networks:
   proxy:
     external: true
     name: traefik
-
+  api-db:
