@@ -5,10 +5,10 @@ services:
     container_name: api
     environment:
       STORAGE: mysql
-      MYSQL_HOST: database
-      MYSQL_USER: root
-      MYSQL_PWD: leon
-      MYSQL_DB: examen
+      MYSQL_HOST: ${MYSQL_HOST}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PWD: ${MYSQL_PWD}
+      MYSQL_DB: ${MYSQL_DB}
     networks:
      - proxy
      - api-db
@@ -36,10 +36,10 @@ services:
     restart: always
     container_name: mysql
     environment:
-      MYSQL_DATABASE: examen
-      MYSQL_USER: leon
-      MYSQL_USER_PASSWORD: leon
-      MYSQL_ROOT_PASSWORD: leon
+      MYSQL_DATABASE: ${MYSQL_DB}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_USER_PASSWORD: ${MYSQL_PWD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_PWD}
     volumes: 
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
       - db-data:/var/lib/mysql
