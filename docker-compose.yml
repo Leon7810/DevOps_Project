@@ -6,7 +6,7 @@ services:
     environment:
       STORAGE: mysql
       MYSQL_HOST: ${MYSQL_HOST}
-      MYSQL_USER: ${MYSQL_ROOT}
+      MYSQL_USER: root
       MYSQL_PWD: ${MYSQL_PWD}
       MYSQL_DB: ${MYSQL_DB}
     networks:
